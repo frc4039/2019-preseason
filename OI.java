@@ -14,18 +14,18 @@ public class OI
 	Button dIntakeOut = new JoystickButton(driver, 9);
 
 	//operator controls
-	Button gripOpen = new JoystickButton(operator, 1); //B
-	Button gripClose = new JoystickButton(operator, 1); //B
-	Button intakeIn = new JoystickButton(operator, 5); //Right bumper
-	Button intakeOut = new JoystickButton(operator, 4); //left bumper
-	Button tiltUp = new JoystickButton(operator, 11); //D-up
-	Button tiltDown = new JoystickButton(operator, 12); //D-down
-	Button conveyorForward = new JoystickButton(operator, 1); //left js up
-	Button conveyorBackward = new JoystickButton(operator, 1); //left js down
-	Button runBlues = new JoystickButton(operator, 10); //A
+	Button gripOpen = new JoystickButton(operator, 2); //B
+	Button gripClose = new JoystickButton(operator, 2); //B
+	Button intakeIn = new JoystickButton(operator, GetRawAxis(3)); //Right bumper
+	Button intakeOut = new JoystickButton(operator, GetRawAxis(2)); //left bumper
+	Button tiltUp = new JoystickButton(operator, GetPOV(0)); //D-up
+	Button tiltDown = new JoystickButton(operator, GetPOV(4)); //D-down
+	Button conveyorForward = new JoystickButton(operator, GetRawAxis(-1)); //left js up
+	Button conveyorBackward = new JoystickButton(operator, GetRawAxis(1)); //left js down
+	Button runBlues = new JoystickButton(operator, 1); //A
     //Button startButton = new JoystickButton(operator, 8);
     
-    OI()
+    public OI()
     {
 		//driver
 		driveShift.whileHeld(new Shift());

@@ -1,7 +1,8 @@
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Command;
+import ShiftLib;
 
-public class SwitchSide extends Command
+public class SwitchSide extends Autos
 {
     Command left, right;
     boolean finished;

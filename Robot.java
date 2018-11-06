@@ -34,34 +34,27 @@ import org.usfirst.frc.team4039.robot.commands.Tilt;
 
 public class Robot extends TimedRobot
 {
-    public static Blues blues;
-    public static Conveyor conveyor;
-    public static Drive drive;
-    public static Gripper gripper;
-    public static Intake intake;
-    public static Tilt tilt;
-    //public static Stretch stretch;
+    Command autonomousCommand;
+    SendableChooser<String> chooser;
 
+    public GameState gameState;
+
+    public static Blues blues = new Blues();
+    public static Conveyor conveyor = new Conveyor();
+    public static Drive drive = new Drive();
+    public static Gripper gripper = new Gripper();
+    public static Intake intake = new Intake();
+    public static Tilt tilt = new Tilt();
+    //public static Stretch stretch = = new Stretch();
     public static OI oi;
-
-    //other variables
-    Command m_autonomousCommand;
-    SendableChooser<Command> m_chooser = new SendableChooser<>();
 
     //run when the robot is first enabled and should be used for any initialization code
     public void robotInit()
     {
-        blues = new Blues();
-        conveyor = new Conveyor();
-        drive = new Drive();
-        gripper = new Gripper();
-        intake = new Intake();
-        tilt = new Tilt();
-        //stretch =  new Stretch();
-
         oi = new OI();
+        this.Drive.setPositionToZero();
 
-        //choose autos
+        chooser = new SendableChooser<String>();
         chooser.addDefault("Drive Forward", new DriveForward());
         chooser.addObject("Drive Forward Cube", new DriveForwardCube());
 
@@ -79,24 +72,16 @@ public class Robot extends TimedRobot
         oi.periodic();
         Scheduler.getInstance().run();
 
-        int LRead = leftEncoder.Get();
-        int RRead = rightEncoder.Get();
-        float GRead = nav.GetYaw();
-
-        for(i = 1; i <= 12; i++)
+        if(Joystick.GetRawButton(12))
         {
-            if(Joystick.GetRawButton(i))
-            {
-                autoMode = i;
-                nav.Reset();
-                leftEncoder.Reset();
-                rightEncoder.Reset();
-                Robot.Reset();
-            }
+            nav.Reset();
+            leftEncoder.Reset();
+            rightEncoder.Reset();
+            Robot.Reset();
         }
 
         autoDelay = -5*(Joystick.GetRawAxis(3) - 1);
-        METRO.updatePos(leftEncoder.Get(), rightEncoder.Get(), nav.GetYaw());
+        Robot.updatePos(leftEncoder.Get(), rightEncoder.Get(), nav.GetYaw());
 
         plateColour = DriverStation.GetInstance().GetGameSpecificMessage();
 
@@ -106,16 +91,24 @@ public class Robot extends TimedRobot
             printDelay = 0;
             if(beamBreak.get())
                 System.out.Println("BEAM SENSOR TRUE\n");
-            System.out.println("robot position x: %d\ty:%d\n", METRO.getXPos(), METRO.getYPos());
+            System.out.println("robot position x: %d\ty:%d\n", Robot.getXPos(), Robot.getYPos());
         }
     }
 
     //shows how to select different auto modes using SmartDash
     public void autonomousInit()
     {
-        Scheduler.getInstance().removeAll();
-
-        autonomousCommand = chooser.getSelected();
+        String selectedAuto = (String) chooser.getSelected();
+        System.out.println(selectedAuto);
+        switch(selectedAuto)
+        {
+            case "DriveForward":
+                autonomousCommand = new DriveForward();
+                break;
+            case "SideCube":
+                autonomousCommand = new SideCube();
+                break;
+        }
 
         if(autonomousCommand != null)
         {
@@ -126,8 +119,7 @@ public class Robot extends TimedRobot
     //this is called periodically during autonomous
     public void autonomousPeriodic()
     {
-        oi.periodic();
-        Schedular.getInstance().run();
+        Scheduler.getInstance().run();
     }
 
     //Makes sure autonomous stops ruuning when tele-op starts
@@ -139,25 +131,7 @@ public class Robot extends TimedRobot
     //this is called periodically during operator control
     public void teleopPeriodic()
     {
-        oi.periodic();
-        Schedular.getInstance().run();
-        //driver stuff
-        if(OI.drive())
-        {
-            DriveForward();
-        }
-        
-        if(OI.driveShift())
-        {
-            driveShift.Shift();
-        }
-
-        if(OI.flag())
-        {
-            
-        }
-
-        //operator controls
+        Scheduler.getInstance().run();
     }
 
     public void testInit()
@@ -167,6 +141,6 @@ public class Robot extends TimedRobot
     //this is called periodically during test mode
     public void testPeriodic()
     {
-        oi.periodic();
+
     }
 }

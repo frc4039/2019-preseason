@@ -3,7 +3,7 @@ import edu.wpi.first.wpilibj.command.Command;
 
 public class ConveyorBackward extends Command()
 {
-    public ConveyorBackward()
+    protected void ConveyorBackward()
     {
         requires(Robot.conveyor);
     }

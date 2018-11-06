@@ -10,13 +10,17 @@ import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class Drive extends subsystems
+public class Drive extends Subsystems
 {
     private double forward = 0.0;
     private double turn = 0.0;
-    private boolean shift = false;
     private double distanceToDrive = 0.0; //
 
+    public void isHighGear(boolean shift)
+    {
+        this.shift = true;
+    }
+    
     public void driveForwardTargetDistance(double distance)
     {
         this.distance = distanceToDrive;
@@ -58,8 +62,7 @@ public class Drive extends subsystems
         }
         else if(DriverStation.getInstance().isAutonomous())
         {
-            //Auto
-            //PID stuff idkkk
+            autonomousPeriodic();
         }
         else
         {
@@ -74,6 +77,7 @@ public class Drive extends subsystems
 
         SmartDashboard.putNumber("Drive/LeftEncoder", driveLeftFront.getSelectedSensorPosition(0));
         SmartDashboard.putNumber("Drive/RightEncoder", driveRightFront.getSelectedSensorPosition(0));
+        SmartDashboard.putNumber("High gear", shift);
     }
 
     protected void initDefaultCommand()
